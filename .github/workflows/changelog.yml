@@ -1,0 +1,21 @@
+name: Changelog
+on:
+  release:
+    types: [published]
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate Changelog
+        run: |
+          git fetch --tags
+          npx auto-changelog --commit-limit false --template keepachangelog
+      - name: Commit Changelog
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add CHANGELOG.md
+          git commit -m "docs: update changelog" || true
+          git push
